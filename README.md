@@ -1,76 +1,86 @@
-# 🚀 FPGA USB3.0 SDR  
-### AD9363 + Artix-7 + FT601
+# FPGA-Based SDR
 
-A **Software Defined Radio (SDR)** platform based on **AD9363 RF transceiver**, **Xilinx Artix-7 FPGA (XC7A35T)** and **FTDI FT601 USB3.0 interface**.
+An FPGA-based software-defined radio platform built around:
 
-This project implements a **high-speed SDR architecture fully written in RTL**.  
-Baseband I/Q data from the RF front-end is streamed through the FPGA and transferred to a host PC via **USB3.0**, enabling flexible software-defined signal processing.
+- 📡 RF transceiver: `AD9363`
+- 🔧 FPGA: `Xilinx Artix-7`
+- 🔌 USB interface: `FTDI FT601`
 
-The system is designed for **SDR research, FPGA digital signal processing experiments, and wireless communication development**.
+The project goal is to build a compact SDR hardware and FPGA platform capable of moving baseband data between the AD9363, the FPGA fabric, and a host PC over USB.
 
----
+## 📷 Hardware
 
-# 📡 Hardware Platform
+![PCB test setup](images/PCB_test_1.jpg)
 
-The SDR hardware consists of three main components:
+The hardware is designed as a direct RF-to-host SDR signal chain. The AD9363 handles RF transmit/receive conversion and provides digital I/Q sample data to the FPGA. The Artix-7 FPGA is the central device on the board: it is responsible for clock-domain handling, buffering, control logic, future baseband processing, and moving sample data between the RF front-end and the USB interface.
 
-| Component | Model | Description |
-|--------|--------|--------|
-| RF Transceiver | **AD9363** | Wideband RF transceiver supporting TX/RX I/Q data |
-| FPGA | **Xilinx Artix-7 XC7A35T (FTGG484)** | Baseband processing and data streaming |
-| USB Interface | **FTDI FT601** | USB3.0 FIFO bridge for high-speed PC communication |
+The FT601 is used as the high-speed USB bridge between the FPGA and the host PC. On the FPGA side, it exposes a parallel FIFO-style interface, which makes it suitable for streaming large blocks of baseband data without requiring a full USB stack inside the FPGA logic. On the host side, the FTDI D3XX driver is used for device enumeration, connection testing, and future data transfer tools.
 
-✨ This architecture allows **real-time streaming of RF baseband data to the host PC**.
+The current PCB integrates the main SDR devices, power supplies, FPGA configuration circuit, USB interface, and board-level routing required for early bring-up. The first hardware revision has already been assembled, and the FT601-to-FPGA path has been validated at a basic communication level. The next hardware revision will focus on fixing the FPGA bank power planning and improving the FT601 USB 3.0 link behavior.
 
----
+| Block | Device | Role |
+| --- | --- | --- |
+| RF front-end | `AD9363` | RF transmit/receive conversion and digital I/Q interface |
+| Digital logic | `Xilinx Artix-7` | Data buffering, control logic, FPGA-side SDR processing |
+| USB bridge | `FTDI FT601` | Parallel FIFO interface between FPGA and host PC |
+| Configuration | External Flash | FPGA bitstream storage, currently affected by bank power planning |
 
-# 🧠 System Architecture
-        RF Signal
-            │
-            ▼
-     +-------------+
-     |   AD9363    |
-     | RF Transceiver
-     +-------------+
-            │
-       Digital I/Q
-            │
-            ▼
-    +----------------+
-    |     FPGA       |
-    |   XC7A35T      |
-    |                |
-    |  Baseband DSP |
-    |  Buffering    |
-    |  Control FSM  |
-    +----------------+
-            │
-      USB3.0 FIFO
-            │
-            ▼
-     +-------------+
-     |   FT601     |
-     | USB3 Bridge |
-     +-------------+
-            │
-            ▼
-           PC
-  (Python / GNU Radio)
+## 🎯 Architecture
 
----
+The main hardware direction is still:
 
-# ⚙️ FPGA Architecture
+```text
+Artix-7 + AD9363 + FT601
+```
 
-The FPGA implements a **streaming SDR pipeline**.
+## ✅ Project Roadmap
 
-Main RTL modules include:
+- [x] Complete BGA soldering for the FPGA-side hardware
+- [x] Bring up the FT601 device on the host side
+- [x] Complete basic FT601-to-FPGA communication testing
+- [x] Add Python test code for FT601 / D3XX device detection
+- [ ] Debug FT601 USB 3.0 SuperSpeed operation
+- [ ] Test and bring up the AD9363
+- [ ] Start writing the FPGA RTL for the SDR data path
+- [ ] Update the schematic based on the current hardware issues
+- [ ] Rework the FPGA bank power plan and Flash connection
+- [ ] Continue system-level SDR validation
 
-| Module | Description |
-|------|------|
-| **AD9363 Interface** | Handles I/Q sample input/output from the RF transceiver |
-| **Buffer / FIFO** | Manages high-throughput streaming data |
-| **Baseband Processing** | Digital signal processing modules |
-| **USB Interface** | Connects FPGA data stream to FT601 |
-| **Control Logic** | FSMs controlling the entire data pipeline |
+## ⚠️ Current Issues
 
-The design is implemented completely in **RTL (Verilog/SystemVerilog)**.
+### 🔌 FT601 Link Speed
+
+The FT601 can currently enumerate and work only in USB 2.0 mode.
+
+Expected behavior is USB 3.0 SuperSpeed operation, so this still needs further debugging. Possible areas to check include USB 3.0 routing, connector signal integrity, cable quality, FT601 configuration, and host-side driver/device recognition.
+
+### ⚡ FPGA Bank Power Planning
+
+The FPGA bank power planning is not ideal in the current hardware revision.
+
+This affects the external Flash interface, and the Flash cannot work correctly with the present bank/power arrangement. The schematic and bank assignment need to be revised in the next hardware update.
+
+## 🧠 FPGA Program Design
+
+This section is reserved for the FPGA design notes.
+
+Planned content:
+
+- [ ] FT601 FIFO interface logic
+- [ ] AD9363 control and data interface
+- [ ] Clock/reset architecture
+- [ ] RX/TX sample data path
+- [ ] Buffering and packet format
+- [ ] Host communication protocol
+- [ ] Debug and test modules
+
+## 📁 Repository Layout
+
+```text
+fpga-based-sdr/
+|-- FPGA/          FPGA project files and RTL experiments
+|-- images/        Project images and documentation assets
+|-- python_test/   Host-side FT601 / D3XX Python tests
+|-- FTD3XX.dll     Local FTDI D3XX runtime DLL
+`-- README.md
+```
