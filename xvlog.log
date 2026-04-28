@@ -1,0 +1,4 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "G:/Project/repository/fpga-based-sdr/FPGA/project_1/project_1.gen/sources_1/ip/async_fifo/async_fifo_stub.v" into library work
+INFO: [VRFC 10-311] analyzing module async_fifo
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "G:/Project/repository/fpga-based-sdr/FPGA/project_1/project_1.srcs/sources_1/new/usb_fifo.sv" into library work
+INFO: [VRFC 10-311] analyzing module usb_fifo

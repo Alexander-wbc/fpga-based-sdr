@@ -25,13 +25,6 @@ The current PCB integrates the main SDR devices, power supplies, FPGA configurat
 | USB bridge | `FTDI FT601` | Parallel FIFO interface between FPGA and host PC |
 | Configuration | External Flash | FPGA bitstream storage, currently affected by bank power planning |
 
-## 🎯 Architecture
-
-The main hardware direction is still:
-
-```text
-Artix-7 + AD9363 + FT601
-```
 
 ## ✅ Project Roadmap
 
@@ -60,19 +53,48 @@ The FPGA bank power planning is not ideal in the current hardware revision.
 
 This affects the external Flash interface, and the Flash cannot work correctly with the present bank/power arrangement. The schematic and bank assignment need to be revised in the next hardware update.
 
-## 🧠 FPGA Program Design
+## FPGA Framework
 
-This section is reserved for the FPGA design notes.
+The FPGA code is being organized around a streaming data framework. The main design direction is to keep external device interfaces, clock-domain crossing, buffering, and future SDR processing blocks separated so that each part can be tested and replaced independently.
 
-Planned content:
+At the current stage, the FPGA framework is centered on the FT601 USB data path. The FT601 runs in its own FIFO bus clock domain, while the internal SDR logic is expected to run in the system clock domain. As a result, the USB path uses asynchronous FIFOs as the boundary between the FT601 interface and the rest of the FPGA design.
 
-- [ ] FT601 FIFO interface logic
+Planned top-level blocks:
+
+- [x] FT601 FIFO interface logic
 - [ ] AD9363 control and data interface
 - [ ] Clock/reset architecture
 - [ ] RX/TX sample data path
 - [ ] Buffering and packet format
 - [ ] Host communication protocol
 - [ ] Debug and test modules
+
+### `usb_fifo`
+
+`usb_fifo.sv` implements the FT601-side USB streaming interface and the first clock-domain crossing layer.
+
+The module contains two asynchronous FIFOs:
+
+- RX FIFO: moves data from the FT601 clock domain into the `sys_clk` domain.
+- TX FIFO: moves data from the `sys_clk` domain into the FT601 clock domain.
+
+The FT601 control logic is implemented as a state machine using the following states:
+
+- `FT601_IDLE`
+- `FT601_WRITE_WAIT`
+- `FT601_WRITE`
+- `FT601_READ_OE`
+- `FT601_READ`
+
+The read path checks `FT601_RXF_N == 0` before reading from the FT601 and also checks that the RX FIFO is not almost full before accepting more data. This prevents the FT601 read side from pushing data into a nearly full FIFO.
+
+The write path only starts when `FT601_TXE_N == 0` and the TX FIFO is not empty. Because the FIFO output data is valid after a read request, the state machine uses `FT601_WRITE_WAIT` to wait for `tx_fifo_valid` before driving `FT601_DATA` and asserting `FT601_WR_N`.
+
+The FIFO control signals are kept outside of the FT601 bus-control always block. This keeps the design split into:
+
+- FT601 bus control: `FT601_WR_N`, `FT601_RD_N`, `FT601_OE_N`, data bus direction, and byte enables.
+- RX FIFO write control: captures FT601 data into the RX FIFO.
+- TX FIFO read control: requests TX FIFO data and latches it before writing to the FT601.
 
 ## 📁 Repository Layout
 
