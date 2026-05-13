@@ -1,0 +1,16 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../project_1.gen/sources_1/ip/sync_fifo/sim/sync_fifo.v" \
+"../../../../project_1.gen/sources_1/ip/async_fifo/sim/async_fifo.v" \
+
+sv xil_defaultlib  \
+"../../../../project_1.srcs/sources_1/new/usb_fifo_layer.sv" \
+"../../../../project_1.srcs/sources_1/new/usb_packet_layer.sv" \
+"../../../../project_1.srcs/sources_1/new/usb_rx_top.sv" \
+"../../../../project_1.srcs/sim_1/new/tb_usb_rx_top.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

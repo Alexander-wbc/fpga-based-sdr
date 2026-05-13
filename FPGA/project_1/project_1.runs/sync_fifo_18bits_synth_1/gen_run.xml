@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenRun Id="sync_fifo_18bits_synth_1" LaunchPart="xc7a35tfgg484-2" LaunchTime="1778684305">
+  <File Type="PA-TCL" Name="sync_fifo_18bits.tcl"/>
+  <File Type="RDS-PROPCONSTRS" Name="sync_fifo_18bits_drc_synth.rpt"/>
+  <File Type="REPORTS-TCL" Name="sync_fifo_18bits_reports.tcl"/>
+  <File Type="RDS-RDS" Name="sync_fifo_18bits.vds"/>
+  <File Type="RDS-UTIL" Name="sync_fifo_18bits_utilization_synth.rpt"/>
+  <File Type="RDS-UTIL-PB" Name="sync_fifo_18bits_utilization_synth.pb"/>
+  <File Type="RDS-DCP" Name="sync_fifo_18bits.dcp"/>
+  <File Type="VDS-TIMINGSUMMARY" Name="sync_fifo_18bits_timing_summary_synth.rpt"/>
+  <File Type="VDS-TIMING-PB" Name="sync_fifo_18bits_timing_summary_synth.pb"/>
+  <FileSet Name="sources" Type="BlockSrcs" RelSrcDir="$PSRCDIR/sync_fifo_18bits" RelGenDir="$PGENDIR/sync_fifo_18bits">
+    <File Path="$PSRCDIR/sources_1/ip/sync_fifo_18bits/sync_fifo_18bits.xci">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="TopModule" Val="sync_fifo_18bits"/>
+      <Option Name="UseBlackboxStub" Val="1"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="constrs_in" Type="BlockSrcs" RelSrcDir="$PSRCDIR/sync_fifo_18bits" RelGenDir="$PGENDIR/sync_fifo_18bits">
+    <File Path="$PSRCDIR/sources_1/ip/sync_fifo_18bits/sync_fifo_18bits.xci">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="TopModule" Val="sync_fifo_18bits"/>
+      <Option Name="UseBlackboxStub" Val="1"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="utils" Type="Utils" RelSrcDir="$PSRCDIR/utils_1" RelGenDir="$PGENDIR/utils_1">
+    <Filter Type="Utils"/>
+    <File Path="$PSRCDIR/utils_1/imports/synth_1/PCB_test.dcp">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedInSteps" Val="synth_1"/>
+        <Attr Name="AutoDcp" Val="1"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="TopAutoSet" Val="TRUE"/>
+    </Config>
+  </FileSet>
+  <Strategy Version="1" Minor="2">
+    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2024">
+      <Desc>Vivado Synthesis Defaults</Desc>
+    </StratHandle>
+    <Step Id="synth_design"/>
+  </Strategy>
+</GenRun>

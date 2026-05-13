@@ -53,6 +53,22 @@ The FPGA bank power planning is not ideal in the current hardware revision.
 
 This affects the external Flash interface, and the Flash cannot work correctly with the present bank/power arrangement. The schematic and bank assignment need to be revised in the next hardware update.
 
+## Communication Protocol
+
+The host PC and FPGA exchange control and data messages over the FT601 USB data path. The protocol is packet based, so each USB transfer can be decoded by the FPGA packet layer before being routed to control registers, sample buffers, or future SDR processing blocks.
+
+### USB Packet Structure
+
+The USB packet format is still being defined. This section records the packet fields used by the FPGA `usb_packet_layer` and the host-side transfer tools.
+
+| Field | Width | Description |
+| --- | --- | --- |
+| Packet header | TBD | Marks the start of a USB packet |
+| Packet type | TBD | Identifies control, RX data, TX data, or debug packets |
+| Payload length | TBD | Number of payload bytes or words following the header |
+| Payload | TBD | Packet data body |
+| Checksum / CRC | TBD | Optional packet integrity field |
+
 ## FPGA Framework
 
 The FPGA code is being organized around a streaming data framework. The main design direction is to keep external device interfaces, clock-domain crossing, buffering, and future SDR processing blocks separated so that each part can be tested and replaced independently.
