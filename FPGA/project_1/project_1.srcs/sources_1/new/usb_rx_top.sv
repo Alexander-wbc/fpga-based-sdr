@@ -43,19 +43,31 @@ module usb_rx_top(
     output logic        rx_data_fifo_valid,
     output logic [9:0]  rx_data_fifo_data_count,
 
-    output logic        reg_write_start,
-    output logic [9:0]  reg_addr,
-    output logic [7:0]  reg_write_data,
-    output logic        reg_read_start,
+    input  logic        reg_cmd_fifo_rd_en,
+    output logic [31:0] reg_cmd_fifo_rd_data,
+    output logic        reg_cmd_fifo_full,
+    output logic        reg_cmd_fifo_almost_full,
+    output logic        reg_cmd_fifo_empty,
+    output logic        reg_cmd_fifo_almost_empty,
+    output logic        reg_cmd_fifo_valid,
+    output logic [6:0]  reg_cmd_fifo_data_count,
 
-    input  logic        write_reg_fifo_rd_en,
-    output logic [17:0] write_reg_fifo_rd_data,
-    output logic        write_reg_fifo_full,
-    output logic        write_reg_fifo_almost_full,
-    output logic        write_reg_fifo_empty,
-    output logic        write_reg_fifo_almost_empty,
-    output logic        write_reg_fifo_valid,
-    output logic [6:0]  write_reg_fifo_data_count,
+    input  logic        tx_data_fifo_wr_en,
+    input  logic [31:0] tx_data_fifo_wr_data,
+    output logic        tx_data_fifo_wr_ready,
+    output logic        tx_data_fifo_full,
+    output logic        tx_data_fifo_almost_full,
+    output logic [9:0]  tx_data_fifo_data_count,
+    output logic [10:0] tx_data_fifo_free_words,
+
+    input  logic        tx_reg_cmd_fifo_wr_en,
+    input  logic [31:0] tx_reg_cmd_fifo_wr_data,
+    output logic        tx_reg_cmd_fifo_wr_ready,
+    output logic        tx_reg_cmd_fifo_full,
+    output logic        tx_reg_cmd_fifo_almost_full,
+    output logic [6:0]  tx_reg_cmd_fifo_data_count,
+
+    output logic [10:0] usb_tx_fifo_free_words,
 
     output logic        rx_start_stream_valid,
     output logic        rx_stop_stream_valid,
@@ -73,9 +85,6 @@ module usb_rx_top(
     logic [31:0] tx_fifo_wr_data;
     logic        tx_fifo_full;
     logic        tx_fifo_almost_full;
-
-    assign tx_fifo_wr_en   = 1'b0;
-    assign tx_fifo_wr_data = 32'd0;
 
     usb_fifo_layer u_usb_fifo_layer (
         .rst_n(rst_n),
@@ -100,7 +109,8 @@ module usb_rx_top(
         .tx_fifo_wr_en(tx_fifo_wr_en),
         .tx_fifo_wr_data(tx_fifo_wr_data),
         .tx_fifo_full(tx_fifo_full),
-        .tx_fifo_almost_full(tx_fifo_almost_full)
+        .tx_fifo_almost_full(tx_fifo_almost_full),
+        .tx_fifo_free_words(usb_tx_fifo_free_words)
     );
 
     usb_packet_layer u_usb_packet_layer (
@@ -112,6 +122,12 @@ module usb_rx_top(
         .rx_fifo_empty(rx_fifo_empty),
         .rx_fifo_valid(rx_fifo_valid),
 
+        .tx_fifo_wr_en(tx_fifo_wr_en),
+        .tx_fifo_wr_data(tx_fifo_wr_data),
+        .tx_fifo_full(tx_fifo_full),
+        .tx_fifo_almost_full(tx_fifo_almost_full),
+        .tx_fifo_free_words(usb_tx_fifo_free_words),
+
         .rx_data_fifo_rd_en(rx_data_fifo_rd_en),
         .rx_data_fifo_rd_data(rx_data_fifo_rd_data),
         .rx_data_fifo_empty(rx_data_fifo_empty),
@@ -119,19 +135,29 @@ module usb_rx_top(
         .rx_data_fifo_valid(rx_data_fifo_valid),
         .rx_data_fifo_data_count(rx_data_fifo_data_count),
 
-        .reg_write_start(reg_write_start),
-        .reg_addr(reg_addr),
-        .reg_write_data(reg_write_data),
-        .reg_read_start(reg_read_start),
+        .reg_cmd_fifo_rd_en(reg_cmd_fifo_rd_en),
+        .reg_cmd_fifo_rd_data(reg_cmd_fifo_rd_data),
+        .reg_cmd_fifo_full(reg_cmd_fifo_full),
+        .reg_cmd_fifo_almost_full(reg_cmd_fifo_almost_full),
+        .reg_cmd_fifo_empty(reg_cmd_fifo_empty),
+        .reg_cmd_fifo_almost_empty(reg_cmd_fifo_almost_empty),
+        .reg_cmd_fifo_valid(reg_cmd_fifo_valid),
+        .reg_cmd_fifo_data_count(reg_cmd_fifo_data_count),
 
-        .write_reg_fifo_rd_en(write_reg_fifo_rd_en),
-        .write_reg_fifo_rd_data(write_reg_fifo_rd_data),
-        .write_reg_fifo_full(write_reg_fifo_full),
-        .write_reg_fifo_almost_full(write_reg_fifo_almost_full),
-        .write_reg_fifo_empty(write_reg_fifo_empty),
-        .write_reg_fifo_almost_empty(write_reg_fifo_almost_empty),
-        .write_reg_fifo_valid(write_reg_fifo_valid),
-        .write_reg_fifo_data_count(write_reg_fifo_data_count),
+        .tx_data_fifo_wr_en(tx_data_fifo_wr_en),
+        .tx_data_fifo_wr_data(tx_data_fifo_wr_data),
+        .tx_data_fifo_wr_ready(tx_data_fifo_wr_ready),
+        .tx_data_fifo_full(tx_data_fifo_full),
+        .tx_data_fifo_almost_full(tx_data_fifo_almost_full),
+        .tx_data_fifo_data_count(tx_data_fifo_data_count),
+        .tx_data_fifo_free_words(tx_data_fifo_free_words),
+
+        .tx_reg_cmd_fifo_wr_en(tx_reg_cmd_fifo_wr_en),
+        .tx_reg_cmd_fifo_wr_data(tx_reg_cmd_fifo_wr_data),
+        .tx_reg_cmd_fifo_wr_ready(tx_reg_cmd_fifo_wr_ready),
+        .tx_reg_cmd_fifo_full(tx_reg_cmd_fifo_full),
+        .tx_reg_cmd_fifo_almost_full(tx_reg_cmd_fifo_almost_full),
+        .tx_reg_cmd_fifo_data_count(tx_reg_cmd_fifo_data_count),
 
         .rx_start_stream_valid(rx_start_stream_valid),
         .rx_stop_stream_valid(rx_stop_stream_valid),

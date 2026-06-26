@@ -48,8 +48,11 @@ module usb_fifo_layer (
     input  logic        tx_fifo_wr_en,
     input  logic [31:0] tx_fifo_wr_data,
     output logic        tx_fifo_full,
-    output logic        tx_fifo_almost_full
+    output logic        tx_fifo_almost_full,
+    output logic [10:0] tx_fifo_free_words
 );
+
+    localparam logic [10:0] TX_FIFO_DEPTH_WORDS = 11'd1024;
 
     typedef enum logic [2:0] {
         FT601_IDLE,
@@ -73,9 +76,11 @@ module usb_fifo_layer (
     logic        tx_fifo_empty;
     logic        tx_fifo_valid;
     logic [31:0] tx_fifo_rd_data;
+    logic [9:0]  tx_fifo_wr_data_count;
     logic [31:0] tx_word;
 
     assign FT601_SIWU_N = 1'b1;
+    assign tx_fifo_free_words = TX_FIFO_DEPTH_WORDS - {1'b0, tx_fifo_wr_data_count};
 
     assign FT601_DATA = data_oe ? data_out : 32'hZZZZ_ZZZZ;
     assign FT601_BE   = data_oe ? be_out   : 4'hZ;
@@ -231,7 +236,7 @@ module usb_fifo_layer (
         .valid(rx_fifo_valid),
         .underflow(),
         .rd_data_count(),
-        .wr_data_count(),
+        .wr_data_count(tx_fifo_wr_data_count),
         .wr_rst_busy(),
         .rd_rst_busy()
     );
