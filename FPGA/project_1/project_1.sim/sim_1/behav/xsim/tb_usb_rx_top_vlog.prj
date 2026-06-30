@@ -1,5 +1,6 @@
 # compile verilog/system verilog design source files
 verilog xil_defaultlib  \
+"../../../../project_1.gen/sources_1/ip/sync_fifo_32x128/sim/sync_fifo_32x128.v" \
 "../../../../project_1.gen/sources_1/ip/sync_fifo/sim/sync_fifo.v" \
 "../../../../project_1.gen/sources_1/ip/async_fifo/sim/async_fifo.v" \
 

@@ -1,7 +1,49 @@
+#-----------------------------------------------------------
+# xsim v2024.1 (64-bit)
+# SW Build 5076996 on Wed May 22 18:37:14 MDT 2024
+# IP Build 5075265 on Wed May 22 21:45:21 MDT 2024
+# SharedData Build 5076995 on Wed May 22 18:29:18 MDT 2024
+# Start of session at: Fri Jun 26 20:43:07 2026
+# Process ID: 1876
+# Current directory: G:/Project/repository/fpga-based-sdr/FPGA/project_1/project_1.sim/sim_1/behav/xsim
+# Command line: xsim.exe -log simulate.log -mode tcl -source {xsim.dir/tb_usb_rx_top_behav/xsim_script.tcl}
+# Log file: G:/Project/repository/fpga-based-sdr/FPGA/project_1/project_1.sim/sim_1/behav/xsim/simulate.log
+# Journal file: G:/Project/repository/fpga-based-sdr/FPGA/project_1/project_1.sim/sim_1/behav/xsim\xsim.jou
+# Running On        :WBC
+# Platform          :Windows Server 2016 or Windows 10
+# Operating System  :26200
+# Processor Detail  :13th Gen Intel(R) Core(TM) i7-13700H
+# CPU Frequency     :2918 MHz
+# CPU Physical cores:14
+# CPU Logical cores :20
+# Host memory       :16891 MB
+# Swap memory       :12884 MB
+# Total Virtual     :29776 MB
+# Available Virtual :7888 MB
+#-----------------------------------------------------------
+source xsim.dir/tb_usb_rx_top_behav/xsim_script.tcl
+# xsim {tb_usb_rx_top_behav} -view {{G:/Project/repository/fpga-based-sdr/FPGA/project_1/tb_usb_rx_top_behav.wcfg}} -tclbatch {tb_usb_rx_top.tcl} -key {Behavioral:sim_1:Functional:tb_usb_rx_top}
 Time resolution is 1 ps
+open_wave_config G:/Project/repository/fpga-based-sdr/FPGA/project_1/tb_usb_rx_top_behav.wcfg
+WARNING: Simulation object /tb_usb_rx_top/dut/u_usb_packet_layer/state was not found in the design.
+WARNING: Simulation object /tb_usb_rx_top/dut/u_usb_packet_layer/next_state was not found in the design.
+WARNING: Simulation object /tb_usb_rx_top/dut/u_usb_packet_layer/reg_write_start was not found in the design.
+WARNING: Simulation object /tb_usb_rx_top/dut/u_usb_packet_layer/reg_addr was not found in the design.
+WARNING: Simulation object /tb_usb_rx_top/dut/u_usb_packet_layer/reg_write_data was not found in the design.
+WARNING: Simulation object /tb_usb_rx_top/dut/u_usb_packet_layer/reg_read_start was not found in the design.
+WARNING: Simulation object /tb_usb_rx_top/dut/u_usb_packet_layer/rx_data_resume_words was not found in the design.
+WARNING: Simulation object /tb_usb_rx_top/dut/u_usb_packet_layer/RX_DATA_FIFO_DEPTH_WORDS was not found in the design.
+source tb_usb_rx_top.tcl
+## set curr_wave [current_wave_config]
+## if { [string length $curr_wave] == 0 } {
+##   if { [llength [get_objects]] > 0} {
+##     add_wave /
+##     set_property needs_save false [current_wave_config]
+##   } else {
+##      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+##   }
+## }
+## run 1000ns
 WARNING: Behavioral models for independent clock FIFO configurations do not model synchronization delays. The behavioral models are functionally correct, and will represent the behavior of the configured FIFO. See the FIFO Generator User Guide for more information.
 WARNING: Behavioral models for independent clock FIFO configurations do not model synchronization delays. The behavioral models are functionally correct, and will represent the behavior of the configured FIFO. See the FIFO Generator User Guide for more information.
-before drain: rx_data_count=897 rx_data_almost_full=0 rx_fifo_empty=0 rx_fifo_almost_empty=0
-rx_data_fifo is not full; packet layer stopped before full
-tb_usb_rx_top PASS
-$finish called at time : 56035 ns : File "G:/Project/repository/fpga-based-sdr/FPGA/project_1/project_1.srcs/sim_1/new/tb_usb_rx_top.sv" Line 199
+xsim% INFO: [Common 17-206] Exiting xsim at Fri Jun 26 20:43:14 2026...

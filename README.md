@@ -61,13 +61,23 @@ The host PC and FPGA exchange control and data messages over the FT601 USB data 
 
 The USB packet format is still being defined. This section records the packet fields used by the FPGA `usb_packet_layer` and the host-side transfer tools.
 
+### RX part
+
 | Field | Width | Description |
 | --- | --- | --- |
-| Packet header | TBD | Marks the start of a USB packet |
-| Packet type | TBD | Identifies control, RX data, TX data, or debug packets |
-| Payload length | TBD | Number of payload bytes or words following the header |
-| Payload | TBD | Packet data body |
-| Checksum / CRC | TBD | Optional packet integrity field |
+| Packet header | 32bits | 32'hAAAA5555 |
+| Packet information | 32bits | [7:0]: type of the packet |
+| Payload length | 32bits | Number of payload bytes or words following the header |
+
+
+Then, payload of each type of packet are described below:
+
+| Type | Width | Description |
+| --- | --- | --- |
+|RX_READ_REG| 32bits | [9:0]:address |
+|RX_WRITE_REG|  32bits  |[9:0]:address,[17:10]:data     |
+|RX_TX_DATA|   32bits |     |
+|RX_LOOP_TEST|  32bits  |     |
 
 ## FPGA Framework
 

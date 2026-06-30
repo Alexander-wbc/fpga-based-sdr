@@ -1,2 +1,0 @@
-sync_fifo_18bits.v,verilog,xil_defaultlib,../../../../project_1.gen/sources_1/ip/sync_fifo_18bits/sim/sync_fifo_18bits.v,
-glbl.v,Verilog,xil_defaultlib,glbl.v

@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
-      <ZoomEndTime time="266.800001 us"></ZoomEndTime>
-      <Cursor1Time time="43.245000 us"></Cursor1Time>
+      <ZoomStartTime time="1,064.166 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,191.167 ns"></ZoomEndTime>
+      <Cursor1Time time="1,170.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="387"></NameColumnWidth>
-      <ValueColumnWidth column_width="171"></ValueColumnWidth>
+      <NameColumnWidth column_width="457"></NameColumnWidth>
+      <ValueColumnWidth column_width="361"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="34" />
+   <WVObjectSize size="43" />
    <wvobject fp_name="/tb_usb_rx_top/dut/u_usb_packet_layer/sys_clk" type="logic">
       <obj_property name="ElementShortName">sys_clk</obj_property>
       <obj_property name="ObjectShortName">sys_clk</obj_property>
@@ -158,5 +158,43 @@
    <wvobject fp_name="/tb_usb_rx_top/dut/u_usb_packet_layer/RX_DATA_FIFO_DEPTH_WORDS" type="array">
       <obj_property name="ElementShortName">RX_DATA_FIFO_DEPTH_WORDS[10:0]</obj_property>
       <obj_property name="ObjectShortName">RX_DATA_FIFO_DEPTH_WORDS[10:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_usb_rx_top/reg_cmd_fifo_rd_en" type="logic">
+      <obj_property name="ElementShortName">reg_cmd_fifo_rd_en</obj_property>
+      <obj_property name="ObjectShortName">reg_cmd_fifo_rd_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_usb_rx_top/reg_cmd_fifo_rd_data" type="array">
+      <obj_property name="ElementShortName">reg_cmd_fifo_rd_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_cmd_fifo_rd_data[31:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_usb_rx_top/reg_cmd_fifo_full" type="logic">
+      <obj_property name="ElementShortName">reg_cmd_fifo_full</obj_property>
+      <obj_property name="ObjectShortName">reg_cmd_fifo_full</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_usb_rx_top/reg_cmd_fifo_almost_full" type="logic">
+      <obj_property name="ElementShortName">reg_cmd_fifo_almost_full</obj_property>
+      <obj_property name="ObjectShortName">reg_cmd_fifo_almost_full</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_usb_rx_top/reg_cmd_fifo_empty" type="logic">
+      <obj_property name="ElementShortName">reg_cmd_fifo_empty</obj_property>
+      <obj_property name="ObjectShortName">reg_cmd_fifo_empty</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_usb_rx_top/reg_cmd_fifo_almost_empty" type="logic">
+      <obj_property name="ElementShortName">reg_cmd_fifo_almost_empty</obj_property>
+      <obj_property name="ObjectShortName">reg_cmd_fifo_almost_empty</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_usb_rx_top/reg_cmd_fifo_valid" type="logic">
+      <obj_property name="ElementShortName">reg_cmd_fifo_valid</obj_property>
+      <obj_property name="ObjectShortName">reg_cmd_fifo_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_usb_rx_top/reg_cmd_fifo_data_count" type="array">
+      <obj_property name="ElementShortName">reg_cmd_fifo_data_count[6:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_cmd_fifo_data_count[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_usb_rx_top/dut/u_usb_packet_layer/reg_cmd_fifo_wr_data" type="array">
+      <obj_property name="ElementShortName">reg_cmd_fifo_wr_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_cmd_fifo_wr_data[31:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
 </wave_config>

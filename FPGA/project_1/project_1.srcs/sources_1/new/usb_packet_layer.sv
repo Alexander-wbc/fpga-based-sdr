@@ -21,7 +21,7 @@
 
 
 module usb_packet_layer #(
-    parameter int DATA_PACKET_WORDS = 256
+    parameter int ee = 256
 )(
     input  logic        sys_clk,
     input  logic        rst_n,
