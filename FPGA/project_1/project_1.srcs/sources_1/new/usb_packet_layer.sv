@@ -21,7 +21,7 @@
 
 
 module usb_packet_layer #(
-    parameter int ee = 256
+    parameter int DATA_PACKET_WORDS = 256
 )(
     input  logic        sys_clk,
     input  logic        rst_n,
@@ -87,8 +87,6 @@ module usb_packet_layer #(
     localparam int TX_FRAME_HEADER_WORDS = 3;
     localparam int TX_SHORT_FRAME_WORDS = TX_FRAME_HEADER_WORDS + 1;
     localparam int TX_DATA_FRAME_WORDS = TX_FRAME_HEADER_WORDS + DATA_PACKET_WORDS;
-    localparam logic [3:0]  REG_CMD_WRITE = 4'h1;
-    localparam logic [3:0]  REG_CMD_READ  = 4'h2;
 
     typedef enum logic [7:0] {
         RX_FRAME_TYPE_WRITE_REG    = 8'h01,
@@ -187,10 +185,16 @@ module usb_packet_layer #(
         ((rx_state == RX_READ_REG) || (rx_state == RX_WRITE_REG)) &&
         !reg_cmd_fifo_full;
 
-    assign reg_cmd_fifo_wr_data =
-        (rx_state == RX_READ_REG) ?
-            {REG_CMD_READ, rx_fifo_rd_data[9:0], 8'd0, 10'd0} :
-            {REG_CMD_WRITE, rx_fifo_rd_data[9:0], rx_fifo_rd_data[17:10], 10'd0};
+    // Internal RX_REG_CMD format:
+    // [31]    0: read, 1: write
+    // [17:10] write data (ignored for reads)
+    // [9:0]   register address
+    assign reg_cmd_fifo_wr_data = {
+        (rx_state == RX_WRITE_REG),
+        13'd0,
+        (rx_state == RX_WRITE_REG) ? rx_fifo_rd_data[17:10] : 8'd0,
+        rx_fifo_rd_data[9:0]
+    };
 
     assign tx_output_ready = !tx_fifo_full && (tx_fifo_free_words != 11'd0);
     assign tx_fifo_can_start_short_frame = ({21'd0, tx_fifo_free_words} > TX_SHORT_FRAME_WORDS);

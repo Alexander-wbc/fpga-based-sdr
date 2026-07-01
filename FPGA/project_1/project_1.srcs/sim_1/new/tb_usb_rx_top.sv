@@ -10,8 +10,6 @@ module tb_usb_rx_top;
     localparam logic [7:0]  FRAME_TYPE_STOP_STREAM  = 8'h21;
     localparam logic [7:0]  TX_FRAME_TYPE_REG_DATA  = 8'h03;
     localparam logic [7:0]  TX_FRAME_TYPE_ACK       = 8'h30;
-    localparam logic [3:0]  REG_CMD_WRITE        = 4'h1;
-    localparam logic [3:0]  REG_CMD_READ         = 4'h2;
     localparam int          DATA_WORDS           = 256;
     localparam int          DATA_PACKETS         = 5;
     localparam int          TOTAL_DATA_WORDS     = DATA_WORDS * DATA_PACKETS;
@@ -179,11 +177,11 @@ module tb_usb_rx_top;
     endtask
 
     function automatic logic [31:0] make_reg_cmd(
-        input logic [3:0] cmd_type,
+        input logic       is_write,
         input logic [9:0] addr,
         input logic [7:0] data
     );
-        make_reg_cmd = {cmd_type, addr, data, 10'd0};
+        make_reg_cmd = {is_write, 13'd0, is_write ? data : 8'd0, addr};
     endfunction
 
     task automatic read_and_check_reg_cmd(input logic [31:0] expected_cmd);
@@ -402,11 +400,11 @@ module tb_usb_rx_top;
         send_reg_command_burst();
 
         for (int i = 0; i < REG_CMD_COUNT; i++) begin
-            read_and_check_reg_cmd(make_reg_cmd(REG_CMD_READ, READ_REG_BASE + i, 8'd0));
+            read_and_check_reg_cmd(make_reg_cmd(1'b0, READ_REG_BASE + i, 8'd0));
         end
 
         for (int i = 0; i < REG_CMD_COUNT; i++) begin
-            read_and_check_reg_cmd(make_reg_cmd(REG_CMD_WRITE, WRITE_REG_BASE + i, WRITE_DATA_BASE + i));
+            read_and_check_reg_cmd(make_reg_cmd(1'b1, WRITE_REG_BASE + i, WRITE_DATA_BASE + i));
         end
 
         fork

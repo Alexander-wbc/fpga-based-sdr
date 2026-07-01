@@ -1,110 +1,125 @@
-# FPGA-Based SDR
+# 基于 FPGA 的软件定义无线电
 
-An FPGA-based software-defined radio platform built around:
+这是一个基于以下器件构建的 FPGA 软件定义无线电（SDR）平台：
 
-- 📡 RF transceiver: `AD9363`
-- 🔧 FPGA: `Xilinx Artix-7`
-- 🔌 USB interface: `FTDI FT601`
+- 📡 射频收发器：`AD9363`
+- 🔧 FPGA：`Xilinx Artix-7`
+- 🔌 USB 接口：`FTDI FT601`
 
-The project goal is to build a compact SDR hardware and FPGA platform capable of moving baseband data between the AD9363, the FPGA fabric, and a host PC over USB.
+本项目旨在构建一个紧凑的 SDR 硬件与 FPGA 平台，通过 USB 在 AD9363、FPGA 逻辑与主机之间传输基带数据。
 
-## 📷 Hardware
+## 📷 硬件
 
-![PCB test setup](images/PCB_test_1.jpg)
+![PCB 测试环境](images/PCB_test_1.jpg)
 
-The hardware is designed as a direct RF-to-host SDR signal chain. The AD9363 handles RF transmit/receive conversion and provides digital I/Q sample data to the FPGA. The Artix-7 FPGA is the central device on the board: it is responsible for clock-domain handling, buffering, control logic, future baseband processing, and moving sample data between the RF front-end and the USB interface.
+硬件采用从射频前端直连主机的 SDR 信号链设计。AD9363 负责射频信号的收发转换，并向 FPGA 提供数字 I/Q 采样数据。Artix-7 FPGA 是板上的核心器件，负责时钟域处理、数据缓冲、控制逻辑、后续基带处理，以及在射频前端和 USB 接口之间传输采样数据。
 
-The FT601 is used as the high-speed USB bridge between the FPGA and the host PC. On the FPGA side, it exposes a parallel FIFO-style interface, which makes it suitable for streaming large blocks of baseband data without requiring a full USB stack inside the FPGA logic. On the host side, the FTDI D3XX driver is used for device enumeration, connection testing, and future data transfer tools.
+FT601 用作 FPGA 与主机之间的高速 USB 桥接器。它在 FPGA 侧提供并行 FIFO 风格的接口，因此无需在 FPGA 逻辑中实现完整的 USB 协议栈，便可传输大块基带数据。主机侧使用 FTDI D3XX 驱动程序完成设备枚举、连接测试，并支持后续的数据传输工具。
 
-The current PCB integrates the main SDR devices, power supplies, FPGA configuration circuit, USB interface, and board-level routing required for early bring-up. The first hardware revision has already been assembled, and the FT601-to-FPGA path has been validated at a basic communication level. The next hardware revision will focus on fixing the FPGA bank power planning and improving the FT601 USB 3.0 link behavior.
+当前 PCB 集成了 SDR 的主要器件、电源、FPGA 配置电路、USB 接口，以及初期硬件调试所需的板级布线。第一版硬件已经完成组装，并已在基础通信层面验证 FT601 到 FPGA 的数据通路。下一版硬件将重点修正 FPGA Bank 电源规划，并改善 FT601 的 USB 3.0 链路性能。
 
-| Block | Device | Role |
+| 功能模块 | 器件 | 作用 |
 | --- | --- | --- |
-| RF front-end | `AD9363` | RF transmit/receive conversion and digital I/Q interface |
-| Digital logic | `Xilinx Artix-7` | Data buffering, control logic, FPGA-side SDR processing |
-| USB bridge | `FTDI FT601` | Parallel FIFO interface between FPGA and host PC |
-| Configuration | External Flash | FPGA bitstream storage, currently affected by bank power planning |
+| 射频前端 | `AD9363` | 射频收发转换和数字 I/Q 接口 |
+| 数字逻辑 | `Xilinx Artix-7` | 数据缓冲、控制逻辑和 FPGA 侧 SDR 处理 |
+| USB 桥接 | `FTDI FT601` | FPGA 与主机之间的并行 FIFO 接口 |
+| 配置存储 | 外部 Flash | 存储 FPGA 比特流，目前受 Bank 电源规划影响 |
 
+## ✅ 项目路线图
 
-## ✅ Project Roadmap
+- [x] 完成 FPGA 侧硬件的 BGA 焊接
+- [x] 在主机侧成功识别 FT601 设备
+- [x] 完成 FT601 到 FPGA 的基础通信测试
+- [x] 添加用于检测 FT601 / D3XX 设备的 Python 测试代码
+- [ ] 调试 FT601 的 USB 3.0 SuperSpeed 工作模式
+- [ ] 测试并完成 AD9363 的初步调通
+- [ ] 开始编写 SDR 数据通路的 FPGA RTL
+- [ ] 根据当前硬件问题更新原理图
+- [ ] 重新规划 FPGA Bank 电源和 Flash 连接
+- [ ] 继续进行 SDR 系统级验证
 
-- [x] Complete BGA soldering for the FPGA-side hardware
-- [x] Bring up the FT601 device on the host side
-- [x] Complete basic FT601-to-FPGA communication testing
-- [x] Add Python test code for FT601 / D3XX device detection
-- [ ] Debug FT601 USB 3.0 SuperSpeed operation
-- [ ] Test and bring up the AD9363
-- [ ] Start writing the FPGA RTL for the SDR data path
-- [ ] Update the schematic based on the current hardware issues
-- [ ] Rework the FPGA bank power plan and Flash connection
-- [ ] Continue system-level SDR validation
+## ⚠️ 当前问题
 
-## ⚠️ Current Issues
+### 🔌 FT601 链路速率
 
-### 🔌 FT601 Link Speed
+FT601 目前只能以 USB 2.0 模式完成枚举和工作。
 
-The FT601 can currently enumerate and work only in USB 2.0 mode.
+预期工作模式为 USB 3.0 SuperSpeed，因此仍需进一步调试。可能需要检查的方面包括 USB 3.0 布线、连接器信号完整性、线缆质量、FT601 配置，以及主机侧的驱动程序和设备识别情况。
 
-Expected behavior is USB 3.0 SuperSpeed operation, so this still needs further debugging. Possible areas to check include USB 3.0 routing, connector signal integrity, cable quality, FT601 configuration, and host-side driver/device recognition.
+### ⚡ FPGA Bank 电源规划
 
-### ⚡ FPGA Bank Power Planning
+当前硬件版本中的 FPGA Bank 电源规划不够合理。
 
-The FPGA bank power planning is not ideal in the current hardware revision.
+该问题会影响外部 Flash 接口；在现有的 Bank 和电源配置下，Flash 无法正常工作。下一版硬件需要修改原理图及 Bank 分配。
 
-This affects the external Flash interface, and the Flash cannot work correctly with the present bank/power arrangement. The schematic and bank assignment need to be revised in the next hardware update.
+## 通信协议
 
-## Communication Protocol
+主机与 FPGA 通过 FT601 USB 数据通路交换控制消息和数据消息。通信协议采用数据包形式，因此 FPGA 的数据包处理层可以先解析每次 USB 传输，再将其路由至控制寄存器、采样缓冲区或后续的 SDR 处理模块。
 
-The host PC and FPGA exchange control and data messages over the FT601 USB data path. The protocol is packet based, so each USB transfer can be decoded by the FPGA packet layer before being routed to control registers, sample buffers, or future SDR processing blocks.
+### USB 数据包结构
 
-### USB Packet Structure
+USB 数据包格式仍在设计中。本节记录 FPGA `usb_packet_layer` 与主机侧传输工具所使用的数据包字段。
 
-The USB packet format is still being defined. This section records the packet fields used by the FPGA `usb_packet_layer` and the host-side transfer tools.
+### 接收部分
 
-### RX part
-
-| Field | Width | Description |
+| 字段 | 宽度 | 说明 |
 | --- | --- | --- |
-| Packet header | 32bits | 32'hAAAA5555 |
-| Packet information | 32bits | [7:0]: type of the packet |
-| Payload length | 32bits | Number of payload bytes or words following the header |
+| 数据包头 | 32 位 | `32'hAAAA5555` |
+| 数据包信息 | 32 位 | `[7:0]`：数据包类型 |
+| 负载长度 | 32 位 | 数据包头之后的负载字节数或字数 |
 
+各类数据包的负载格式如下：
 
-Then, payload of each type of packet are described below:
-
-| Type | Width | Description |
+| 类型 | 宽度 | 说明 |
 | --- | --- | --- |
-|RX_READ_REG| 32bits | [9:0]:address |
-|RX_WRITE_REG|  32bits  |[9:0]:address,[17:10]:data     |
-|RX_TX_DATA|   32bits |     |
-|RX_LOOP_TEST|  32bits  |     |
+| `RX_READ_REG` | 32 位 | `[9:0]`：地址 |
+| `RX_WRITE_REG` | 32 位 | `[9:0]`：地址，`[17:10]`：数据 |
+| `RX_TX_DATA` | 32 位 | |
+| `RX_LOOP_TEST` | 32 位 | |
 
-## FPGA Framework
+Packet Layer 将主机发来的读写寄存器请求转换后写入内部 `RX_REG_CMD` FIFO，其命令字格式如下：
 
-The FPGA code is being organized around a streaming data framework. The main design direction is to keep external device interfaces, clock-domain crossing, buffering, and future SDR processing blocks separated so that each part can be tested and replaced independently.
+| 位域 | 说明 |
+| --- | --- |
+| `[31]` | 操作类型：`0` 表示读寄存器，`1` 表示写寄存器 |
+| `[30:18]` | 保留，置 `0` |
+| `[17:10]` | 写寄存器数据；读操作时置 `0` |
+| `[9:0]` | AD9363 寄存器地址 |
 
-At the current stage, the FPGA framework is centered on the FT601 USB data path. The FT601 runs in its own FIFO bus clock domain, while the internal SDR logic is expected to run in the system clock domain. As a result, the USB path uses asynchronous FIFOs as the boundary between the FT601 interface and the rest of the FPGA design.
+读寄存器操作完成后，SPI 接口将结果写入 `TX_REG_DATA` FIFO。返回字格式为：
 
-Planned top-level blocks:
+| 位域 | 说明 |
+| --- | --- |
+| `[31:18]` | 保留，置 `0` |
+| `[17:10]` | 读取到的 8 位寄存器数据 |
+| `[9:0]` | AD9363 寄存器地址 |
 
-- [x] FT601 FIFO interface logic
-- [ ] AD9363 control and data interface
-- [ ] Clock/reset architecture
-- [ ] RX/TX sample data path
-- [ ] Buffering and packet format
-- [ ] Host communication protocol
-- [ ] Debug and test modules
+## FPGA 框架
+
+FPGA 代码正在围绕流式数据框架进行组织。设计的主要方向是将外部器件接口、时钟域交叉、数据缓冲以及后续的 SDR 处理模块相互分离，使各部分能够独立测试和替换。
+
+现阶段的 FPGA 框架以 FT601 USB 数据通路为核心。FT601 工作在其自身的 FIFO 总线时钟域，而 FPGA 内部 SDR 逻辑预计工作在系统时钟域。因此，USB 数据通路使用异步 FIFO 作为 FT601 接口与 FPGA 其余逻辑之间的边界。
+
+计划中的顶层模块：
+
+- [x] FT601 FIFO 接口逻辑
+- [ ] AD9363 控制与数据接口
+- [ ] 时钟与复位架构
+- [ ] RX/TX 采样数据通路
+- [ ] 数据缓冲与数据包格式
+- [ ] 主机通信协议
+- [ ] 调试与测试模块
 
 ### `usb_fifo`
 
-`usb_fifo.sv` implements the FT601-side USB streaming interface and the first clock-domain crossing layer.
+`usb_fifo.sv` 实现 FT601 侧的 USB 流式传输接口，以及第一层时钟域交叉逻辑。
 
-The module contains two asynchronous FIFOs:
+该模块包含两个异步 FIFO：
 
-- RX FIFO: moves data from the FT601 clock domain into the `sys_clk` domain.
-- TX FIFO: moves data from the `sys_clk` domain into the FT601 clock domain.
+- RX FIFO：将数据从 FT601 时钟域传输至 `sys_clk` 时钟域。
+- TX FIFO：将数据从 `sys_clk` 时钟域传输至 FT601 时钟域。
 
-The FT601 control logic is implemented as a state machine using the following states:
+FT601 控制逻辑由状态机实现，包含以下状态：
 
 - `FT601_IDLE`
 - `FT601_WRITE_WAIT`
@@ -112,23 +127,31 @@ The FT601 control logic is implemented as a state machine using the following st
 - `FT601_READ_OE`
 - `FT601_READ`
 
-The read path checks `FT601_RXF_N == 0` before reading from the FT601 and also checks that the RX FIFO is not almost full before accepting more data. This prevents the FT601 read side from pushing data into a nearly full FIFO.
+读通路在从 FT601 读取数据前检查 `FT601_RXF_N == 0`，同时确认 RX FIFO 尚未接近满状态，之后才接收更多数据。这可以防止 FT601 读端继续向即将写满的 FIFO 推送数据。
 
-The write path only starts when `FT601_TXE_N == 0` and the TX FIFO is not empty. Because the FIFO output data is valid after a read request, the state machine uses `FT601_WRITE_WAIT` to wait for `tx_fifo_valid` before driving `FT601_DATA` and asserting `FT601_WR_N`.
+写通路仅在 `FT601_TXE_N == 0` 且 TX FIFO 非空时启动。由于 FIFO 输出数据在发出读请求后才有效，状态机使用 `FT601_WRITE_WAIT` 等待 `tx_fifo_valid`，随后才驱动 `FT601_DATA` 并置有效 `FT601_WR_N`。
 
-The FIFO control signals are kept outside of the FT601 bus-control always block. This keeps the design split into:
+FIFO 控制信号独立于 FT601 总线控制的 `always` 块。由此，设计被划分为：
 
-- FT601 bus control: `FT601_WR_N`, `FT601_RD_N`, `FT601_OE_N`, data bus direction, and byte enables.
-- RX FIFO write control: captures FT601 data into the RX FIFO.
-- TX FIFO read control: requests TX FIFO data and latches it before writing to the FT601.
+- FT601 总线控制：控制 `FT601_WR_N`、`FT601_RD_N`、`FT601_OE_N`、数据总线方向和字节使能。
+- RX FIFO 写控制：将 FT601 数据写入 RX FIFO。
+- TX FIFO 读控制：请求 TX FIFO 数据并锁存，随后写入 FT601。
 
-## 📁 Repository Layout
+### `ad9363_spi_if`
+
+`ad9363_spi_if.sv` 连接 Packet Layer 的 `RX_REG_CMD` 和 `TX_REG_DATA` FIFO 接口，并自动执行 AD9363 单寄存器读写操作。
+
+SPI 接口按照 AD9363 Reference Manual UG-1040 的串行外设接口时序工作：默认采用 4 线、MSB first 格式，数据在 SPI 时钟上升沿推出、下降沿采样，`SPI_ENB` 在最后一个下降沿之后恢复高电平。在 50 MHz `sys_clk` 下生成周期为 100 ns 的 10 MHz SPI 时钟。
+
+每次单寄存器操作传输 24 位。前 16 位控制字格式为 `[15]` 写/读标志、`[14:12]` 单字节传输长度 `3'b000`、`[11:10]` 保留位 `2'b00` 和 `[9:0]` 寄存器地址，随后传输 8 位写入数据或读出数据。写操作完成后直接处理下一条命令；读操作会等待 `TX_REG_DATA` FIFO 可写，再按上述返回格式提交结果。
+
+## 📁 仓库结构
 
 ```text
 fpga-based-sdr/
-|-- FPGA/          FPGA project files and RTL experiments
-|-- images/        Project images and documentation assets
-|-- python_test/   Host-side FT601 / D3XX Python tests
-|-- FTD3XX.dll     Local FTDI D3XX runtime DLL
+|-- FPGA/          FPGA 工程文件和 RTL 实验代码
+|-- images/        项目图片和文档资源
+|-- python_test/   主机侧 FT601 / D3XX Python 测试代码
+|-- FTD3XX.dll     本地 FTDI D3XX 运行库
 `-- README.md
 ```
