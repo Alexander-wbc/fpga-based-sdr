@@ -1,7 +1,0 @@
-Time resolution is 1 ps
-WARNING: Behavioral models for independent clock FIFO configurations do not model synchronization delays. The behavioral models are functionally correct, and will represent the behavior of the configured FIFO. See the FIFO Generator User Guide for more information.
-WARNING: Behavioral models for independent clock FIFO configurations do not model synchronization delays. The behavioral models are functionally correct, and will represent the behavior of the configured FIFO. See the FIFO Generator User Guide for more information.
-before drain: rx_data_count=897 rx_data_almost_full=0 rx_fifo_empty=0 rx_fifo_almost_empty=0
-rx_data_fifo is not full; packet layer stopped before full
-tb_usb_rx_top PASS
-$finish called at time : 82990 ns : File "G:/Project/repository/fpga-based-sdr/FPGA/project_1/project_1.srcs/sim_1/new/tb_usb_rx_top.sv" Line 408

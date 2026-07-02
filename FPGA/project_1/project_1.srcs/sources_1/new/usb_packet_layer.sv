@@ -208,12 +208,19 @@ module usb_packet_layer #(
     assign tx_reg_cmd_fifo_wr_ready = !tx_reg_cmd_fifo_full;
     assign tx_reg_cmd_fifo_wr_en_int = tx_reg_cmd_fifo_wr_en && tx_reg_cmd_fifo_wr_ready;
 
+    // Every FPGA -> PC frame carries credits for both sample directions:
+    // [31:30] reserved
+    // [29:19] AD9363 -> PC packet FIFO free words
+    // [18:8]  PC -> AD9363 packet FIFO free words
+    // [7:0]   frame type
     function automatic logic [31:0] make_tx_info(input tx_frame_type_t frame_type);
         begin
-            make_tx_info = {24'd0, frame_type};
-            if (frame_type == TX_FRAME_TYPE_TX_DATA) begin
-                make_tx_info = {13'd0, rx_data_fifo_free_words, frame_type};
-            end
+            make_tx_info = {
+                2'd0,
+                tx_data_fifo_free_words,
+                rx_data_fifo_free_words,
+                frame_type
+            };
         end
     endfunction
 

@@ -1,0 +1,17 @@
+# Vivado generated state and output
+FPGA/project_1/project_1.cache/
+FPGA/project_1/project_1.gen/
+FPGA/project_1/project_1.hw/
+FPGA/project_1/project_1.ip_user_files/
+FPGA/project_1/project_1.runs/
+FPGA/project_1/project_1.sim/
+FPGA/project_1/project_1.srcs/utils_1/imports/
+FPGA/project_1/.codex_sim/
+
+# XSim and Vivado transient files
+.Xil/
+xsim.dir/
+*.jou
+*.log
+*.pb
+*.wdb

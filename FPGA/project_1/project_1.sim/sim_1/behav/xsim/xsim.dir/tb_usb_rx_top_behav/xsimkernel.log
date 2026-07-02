@@ -1,7 +1,0 @@
-Running: xsim.dir/tb_usb_rx_top_behav/xsimk.exe -runall -simmode gui -wdb tb_usb_rx_top_behav.wdb -simrunnum 0 -socket 53489
-Design successfully loaded
-Design Loading Memory Usage: 12584 KB (Peak: 12584 KB)
-Design Loading CPU Usage: 46 ms
-Simulation completed
-Simulation Memory Usage: 13576 KB (Peak: 13576 KB)
-Simulation CPU Usage: 140 ms

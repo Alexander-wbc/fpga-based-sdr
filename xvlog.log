@@ -1,4 +1,0 @@
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "G:/Project/repository/fpga-based-sdr/FPGA/project_1/project_1.srcs/sources_1/new/usb_packet_layer.sv" into library work
-INFO: [VRFC 10-311] analyzing module usb_packet_layer
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "G:/Project/repository/fpga-based-sdr/FPGA/project_1/project_1.srcs/sources_1/new/usb_rx_top.sv" into library work
-INFO: [VRFC 10-311] analyzing module usb_rx_top

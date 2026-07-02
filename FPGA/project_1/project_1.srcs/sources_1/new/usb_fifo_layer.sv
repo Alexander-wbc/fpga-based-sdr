@@ -113,6 +113,7 @@ module usb_fifo_layer (
 
             FT601_WRITE: begin
                 if (FT601_TXE_N == 1'b1) begin
+                    // Hold the prefetched word until FT601 has room again.
                     next_state = FT601_WRITE;
                 end else if (!tx_fifo_empty) begin
                     next_state = FT601_WRITE_WAIT;
@@ -236,7 +237,7 @@ module usb_fifo_layer (
         .valid(rx_fifo_valid),
         .underflow(),
         .rd_data_count(),
-        .wr_data_count(tx_fifo_wr_data_count),
+        .wr_data_count(),
         .wr_rst_busy(),
         .rd_rst_busy()
     );
@@ -258,7 +259,7 @@ module usb_fifo_layer (
         .valid(tx_fifo_valid),
         .underflow(),
         .rd_data_count(),
-        .wr_data_count(),
+        .wr_data_count(tx_fifo_wr_data_count),
         .wr_rst_busy(),
         .rd_rst_busy()
     );
